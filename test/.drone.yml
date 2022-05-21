@@ -1,0 +1,12 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+- name: debug
+  image: somax/drone-ding:2022
+  settings:
+    webhook: https://httpbin.org/post
+    timezone: Asia/Shanghai
+    title: "自动构建通知 $CI_REPO_NAME Build#$CI_BUILD_NUMBER $DRONE_BUILD_STATUS"
+    template: "## 自动构建 \n\n### Build#$CI_BUILD_NUMBER $DRONE_BUILD_STATUS\n\n🚀 由 $CI_COMMIT_AUTHOR_NAME 提交到 $CI_COMMIT_REF\n\n👉 [构建详情]($DRONE_BUILD_LINK)\n\n🕑 $DATETIME" 

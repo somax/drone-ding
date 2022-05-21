@@ -1,38 +1,55 @@
 # drone-ding
 
-Drone plugin for sending **DingTalk** notifications. 发送通知到**钉钉**的 Drone 插件
+Drone plugin for sending **DingTalk** notifications. 
+发送通知到**钉钉**的 Drone 插件
 
 ## usage
 
 ### .drone.yml
 
 ```yml
-pipeline:
-  ding:
-    image: somax/drone-ding
-    webhook: https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxx
+kind: pipeline
+type: docker
+name: default
+
+steps:
+- name: debug
+  image: somax/drone-ding:2022
+  settings:
+    webhook: https://httpbin.org/post
+    timezone: Asia/Shanghai
+    title: "自动构建通知 $CI_REPO_NAME Build#$CI_BUILD_NUMBER $DRONE_BUILD_STATUS"
+    template: "## 自动构建 \n\n### Build#$CI_BUILD_NUMBER $DRONE_BUILD_STATUS\n\n🚀 由 $CI_COMMIT_AUTHOR_NAME 提交到 $CI_COMMIT_REF\n\n👉 [构建详情]($DRONE_BUILD_LINK)\n\n🕑 $DATETIME" 
 
 ```
 
-出于安全考虑，你应该将 webhook 设置在 drone 的 Secrets 里面，名称是 `ding_webhook`。
+出于安全考虑，你应该将 webhook 设置在 drone 的 Secrets 里面，假设名称是 `ding_webhook`。
 
 ```yml
-pipeline:
-  ding:
-    image: somax/drone-ding
-    secrets: [ ding_webhook ]
-
+  settings:
+    webhook: 
+      from_secret: ding_webhook
 ```
 
-### 自定义消息格式
+### 自定义
 
-这是展示的是默认格式，你可以根据自己需要自定义消息格式
- 
 ```yml
-pipeline:
-  ding:
-    image: somax/drone-ding
-    secrets: [ ding_webhook ]
-    title: "${DRONE_BUILD_STATUS} ${DRONE_REPO_OWNER}/${DRONE_REPO_NAME} #${DRONE_BUILD_NUMBER}"
-    template: "## Build #${DRONE_BUILD_NUMBER} ${DRONE_BUILD_STATUS}\n> [${DRONE_REPO_OWNER}/${DRONE_REPO_NAME}#${DRONE_COMMIT}](${DRONE_BUILD_LINK}) (${DRONE_BRANCH}) \n>by ${DRONE_COMMIT_AUTHOR} \n${DRONE_COMMIT_MESSAGE}"
+  settings:
+    webhook: https://httpbin.org/post
+    timezone: Asia/Shanghai
+    title: "自动构建通知 $CI_REPO_NAME Build#$CI_BUILD_NUMBER $DRONE_BUILD_STATUS"
+    template: "## 自动构建 \n\n### Build#$CI_BUILD_NUMBER $DRONE_BUILD_STATUS\n\n🚀 由 $CI_COMMIT_AUTHOR_NAME 提交到 $CI_COMMIT_REF\n\n👉 [构建详情]($DRONE_BUILD_LINK)\n\n🕑 $DATETIME" 
+```
+
+完整的环境变量引用请查看官方文档: https://docs.drone.io/pipeline/environment/reference/
+
+
+### 构建容器镜像
+```sh
+./build.sh
+```
+
+### 测试
+```sh
+drone exec 
 ```

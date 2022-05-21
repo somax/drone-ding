@@ -1,5 +1,8 @@
 FROM alpine
+
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+    && apk -Uuv add tzdata
+
 ADD post.sh /bin/
-RUN chmod +x /bin/post.sh
-RUN apk -Uuv add curl ca-certificates
+
 ENTRYPOINT /bin/post.sh
