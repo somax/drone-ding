@@ -51,5 +51,5 @@ steps:
 
 ### 测试
 ```sh
-drone exec 
+drone exec test/.drone.yml
 ```
